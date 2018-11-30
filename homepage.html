@@ -8,6 +8,7 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
     <style>
         .input-group {
@@ -32,6 +33,30 @@
             </div>
         </div>
     </div>
+
+    <script>
+        window.SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
+        const recognition = new SpeechRecognition();
+        let textbox = document.querySelector('.form-control');
+        
+        $(document).ready(function(){            
+            $('.fa-microphone').click(function() {
+                record();
+            })
+
+            function record() {
+                recognition.start();
+                setTimeout(function() {
+                    recognition.stop();
+                    recognition.onresult = (event) => {
+                        const speechToText = event.results[0][0].transcript;
+                        console.log(speechToText);
+                        $('.form-control').val(speechToText);                    
+                    }
+                }, 3000);
+            }
+        });
+    </script>
 
     <script src=" https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.js "></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js " integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49 "
