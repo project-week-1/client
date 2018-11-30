@@ -7,12 +7,12 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
         crossorigin="anonymous">
-    <title>Document</title>
+    <title>Helper's</title>
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">Navbar</a>
+        <a class="navbar-brand" href="#">HELPER'S</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor03" aria-controls="navbarColor03"
             aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -21,18 +21,9 @@
         <div class="collapse navbar-collapse" id="navbarColor03">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">Home
+                    <a class="nav-link" href="homepage.html">Back to Search
                         <span class="sr-only">(current)</span>
                     </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Features</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Pricing</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">About</a>
                 </li>
             </ul>
             <form class="form-inline my-2 my-lg-0">
@@ -53,7 +44,7 @@
                 <!-- END OF LOOP -->
             </div>
             <div class="col-md-6">
-                <div id="detail">
+                <div id="detail" style="position: fixed; background: #eee">
                     <!-- INI BUAT TRANSLATE -->
                     <div class="mt-3">
                         <form action="">
@@ -86,14 +77,8 @@
     </div>
     </div>
 
-<<<<<<< HEAD
     <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
         crossorigin="anonymous"></script>
-=======
-
-
-    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
->>>>>>> get list news on client
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
         crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
@@ -114,39 +99,27 @@
             })
         // console.log(voices)
         }
+
         $('#detail').hide()
+
         $.ajax({
             method: 'GET',
             url: 'http://localhost:3000/translate'
         })
-            .then(listLang => {
-                data = listLang[1].data.languages
-                let template = ''
-                $.each(data, (index, value) => {
-                    template += `<option value="${value.language}"> ${value.name}</option>`
-                })
-                $('#listLanguages').html(template)
+        .then(listLang => {
+            data = listLang[1].data.languages
+            let template = ''
+            $.each(data, (index, value) => {
+                template += `<option value="${value.language}"> ${value.name}</option>`
             })
-            .catch(err => {
+            $('#listLanguages').html(template)
+        })
+        .catch(err => {
                 console.log(err)
             })
 
-<<<<<<< HEAD
-        $('#showDetail').click(() => {
-            $('#detail').show()
-            let inputBody = $('#articleBody').data('body')
-            let inputHeader = $('#articleHeader').data('header')
-            $('#mainDetail').html(
-                `<h1 id="detailHeader" data-header="${inputHeader}">${inputHeader}</h1>
-                <p id="detailBody" data-body="${inputBody}">${inputBody}</p>`
-            )
-        })
-
         $('#submitLanguage').click((e) => {
             e.preventDefault()
-=======
-        $('#submitLanguage').click(() => {
->>>>>>> get list news on client
             let select = $('#listLanguages').val()
             let words = $('#detailBody').data('body')
             $.ajax({
@@ -158,7 +131,7 @@
                 }
             })
                 .then(translate => {
-                    let inputHeader = $('#articleHeader').data('header')
+                    let inputHeader = $('#detailHeader').data('header')
                     $('#mainDetail').html(
                         `<h1 id="detailHeader" data-header="${inputHeader}">${inputHeader}</h1>
                         <p id="detailBody" data-body="${translate.translation}">${translate.translation}</p>`
@@ -169,48 +142,47 @@
                 })
         })
 
-<<<<<<< HEAD
         $("#submitSpeech").submit(function( event ) {
             event.preventDefault()
 
-            // let voice = voices[$('#voiceOptions').val()]
-            // let words = $('#detailBody').data('body')
-            // let select = $('#listLanguages').val()
+            let voice = voices[$('#voiceOptions').val()].lang
+            let words = $('#detailBody').data('body')
+            let select = $('#listLanguages').val()
 
-            // console.log(`${select}-${select.toUpperCase()}`)
-            // $.ajax({
-            //   type: "POST",
-            //   url: 'http://localhost:3000/speech',
-            //   data: {
-            //       lang: voice,
-            //       text: words
-            //   },
-            //   dataType: 'json'
-            // })
-            // .done(result => {
-            //     // console.log('resuuuult')
-            //     // console.log(result.body)
-            //     const audio = new Audio(result.body);
-            //     // console.log('audio')
-            //     // console.log(audio)
-            //     audio.play();
-            // })
-            // .fail(err => {
-            //     console.log(err.responseJSON)
-            //     alert(err.responseJSON.msg)
-            // })
+            console.log(`${voice}`)
+            $.ajax({
+              type: "POST",
+              url: 'http://localhost:3000/speech',
+              data: {
+                  lang: voice,
+                  text: words
+              },
+              dataType: 'json'
+            })
+            .done(result => {
+                // console.log('resuuuult')
+                // console.log(result.body)
+                const audio = new Audio(result.body);
+                // console.log('audio')
+                // console.log(audio)
+                audio.play();
+            })
+            .fail(err => {
+                console.log(err.responseJSON)
+                alert(err.responseJSON.msg)
+            })
             
-            let text = $('#detailBody').data('body')
-            let voice = voices[$('#voiceOptions').val()]
-            console.log(voice)
-            speakText = new SpeechSynthesisUtterance(text)
-            speakText.rate = 0.9
-            speakText.voice = voice
-            speakText.pitch = 1
+            // let text = $('#detailBody').data('body')
+            // let voice = voices[$('#voiceOptions').val()]
+            // console.log(text)
+            // console.log(voice)
+            // speakText = new SpeechSynthesisUtterance(text)
+            // speakText.rate = 0.9
+            // speakText.voice = voice
+            // speakText.pitch = 1
             
-            synthesis.speak(speakText)
+            // synthesis.speak(speakText)
         })
-=======
         $.ajax({
             url: 'http://localhost:3000/news/get',
             type: 'GET',
@@ -252,11 +224,6 @@
                 <p id="detailBody" data-body="${inputBody}">${inputBody}</p>`
             )
         }
-
-
-
->>>>>>> get list news on client
-
     </script>
 </body>
 
