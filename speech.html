@@ -36,18 +36,21 @@
             
             
         }
-        $("#form_text").submit(function( event ) {
+        $("#submitSpeech").submit(function( event ) {
             event.preventDefault()
-            let text = $("#input_text").val()
-            // console.log()
-            let voice = voices[document.getElementById("voiceOptions").value].lang
-            console.log(voice)
+            // let text = $("#input_text").val()
+            // let voice = voices[document.getElementById("voiceOptions").value].lang
+
+            let words = $('#detailBody').data('body')
+            let select = $('#listLanguages').val()
+
+            console.log(select)
             $.ajax({
               type: "POST",
               url: 'http://localhost:3000/speech',
               data: {
-                  lang: voice,
-                  text: text
+                  lang: select,
+                  text: word
               },
               dataType: 'json'
             })
