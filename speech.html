@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <title>App</title>
+</head>
+<body>
+    <form action="#" id="form_text">
+      <div class="form-group">
+        <label for="text">Text</label>
+        <input type="text" class="form-control" id="input_text" placeholder="type text here">
+      </div>
+      <button type="submit" class="btn btn-default">Speak</button>
+    </form>
+    <br>
+    <select id="voiceOptions"></select>
+
+    <script>
+        var synthesis = window.speechSynthesis
+        var voices = []
+        synthesis.onvoiceschanged = function() {
+            let dataVoice = synthesis.getVoices()
+            // console.log(dataVoice)
+            let i = 0
+            dataVoice.forEach(e=>{
+                voices.push(e)
+                $('#voiceOptions').append(`<option value="${i}"> ${e.name}(${e.lang}) </option>`)
+                i++
+            })
+            // console.log(voices)
+            
+            
+        }
+        $("#form_text").submit(function( event ) {
+            event.preventDefault()
+            let text = $("#input_text").val()
+            // console.log()
+            let voice = voices[document.getElementById("voiceOptions").value].lang
+            console.log(voice)
+            $.ajax({
+              type: "POST",
+              url: 'http://localhost:3000/speech',
+              data: {
+                  lang: voice,
+                  text: text
+              },
+              dataType: 'json'
+            })
+            .done(result => {
+                console.log(result)
+                const audio = new Audio(result.body);
+                audio.play();
+            })
+            .fail(err => {
+                console.log(err.responseJSON)
+                alert(err.responseJSON.msg)
+            })
+        })
+
+
+    </script>
+</body>
+</html>
