@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+    <title>Helper's</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">HELPER'S</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor03" aria-controls="navbarColor03"
+            aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarColor03">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="homepage.html">Back to Search
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="text" placeholder="Search">
+                <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <!-- TINGGAL LOOP INI, data-header dan data-body SESUAIKAN LOOP-->
+                <div>
+                    <div id="listData">
+
+                    </div>
+                </div>
+                <!-- END OF LOOP -->
+            </div>
+            <div class="col-md-6">
+                <div id="detail" style="position: fixed; background: #eee">
+                    <!-- INI BUAT TRANSLATE -->
+                    <div class="mt-3">
+                        <form action="">
+                            <button id="submitLanguage" class="btn"> Translate </button>
+                            <select id="listLanguages" name="" id="">
+                                <!-- <option value=""> tes</option> -->
+                            </select>
+                        </form>
+                    </div>
+                    <!-- END OF TRANSLATE -->
+
+                    <!-- INI BUAT SPEECH -->
+                    <div class="mt-3">
+                        <form action="" id="submitSpeech">
+                            <button id="submitSpeechBtn" class="btn"> Speech </button>
+                            <select id="voiceOptions"></select>
+                        </form>
+                    </div>
+                    <!-- END OF SPEECH -->
+
+                    <!-- MAIN DETAIL -->
+                    <div id="mainDetail" class="text-center">
+
+                    </div>
+                    <!-- END OF MAIN DETAIL -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+
+
+    <script>
+        var synthesis = window.speechSynthesis
+        var voices = []
+        synthesis.onvoiceschanged = function() {
+            let dataVoice = synthesis.getVoices()
+            // console.log(dataVoice)
+            let i = 0
+            dataVoice.forEach(e=>{
+                voices.push(e)
+                $('#voiceOptions').append(`<option id="lang-value" value="${i}"> ${e.name}(${e.lang}) </option>`)
+                i++
+            })
+        // console.log(voices)
+        }
+
+        $('#detail').hide()
+
+        $.ajax({
+            method: 'GET',
+            url: 'http://localhost:3000/translate'
+        })
+        .then(listLang => {
+            data = listLang[1].data.languages
+            let template = ''
+            $.each(data, (index, value) => {
+                template += `<option value="${value.language}"> ${value.name}</option>`
+            })
+            $('#listLanguages').html(template)
+        })
+        .catch(err => {
+                console.log(err)
+            })
+
+        $('#submitLanguage').click((e) => {
+            e.preventDefault()
+            let select = $('#listLanguages').val()
+            let words = $('#detailBody').data('body')
+            $.ajax({
+                method: 'POST',
+                url: 'http://localhost:3000/translate',
+                data: {
+                    text: words,
+                    target: select
+                }
+            })
+                .then(translate => {
+                    let inputHeader = $('#detailHeader').data('header')
+                    $('#mainDetail').html(
+                        `<h1 id="detailHeader" data-header="${inputHeader}">${inputHeader}</h1>
+                        <p id="detailBody" data-body="${translate.translation}">${translate.translation}</p>`
+                    )
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        })
+
+        $("#submitSpeech").submit(function( event ) {
+            event.preventDefault()
+
+            let voice = voices[$('#voiceOptions').val()].lang
+            let words = $('#detailBody').data('body')
+            let select = $('#listLanguages').val()
+
+            console.log(`${voice}`)
+            $.ajax({
+              type: "POST",
+              url: 'http://localhost:3000/speech',
+              data: {
+                  lang: voice,
+                  text: words
+              },
+              dataType: 'json'
+            })
+            .done(result => {
+                // console.log('resuuuult')
+                // console.log(result.body)
+                const audio = new Audio(result.body);
+                // console.log('audio')
+                // console.log(audio)
+                audio.play();
+            })
+            .fail(err => {
+                console.log(err.responseJSON)
+                alert(err.responseJSON.msg)
+            })
+            
+            // let text = $('#detailBody').data('body')
+            // let voice = voices[$('#voiceOptions').val()]
+            // console.log(text)
+            // console.log(voice)
+            // speakText = new SpeechSynthesisUtterance(text)
+            // speakText.rate = 0.9
+            // speakText.voice = voice
+            // speakText.pitch = 1
+            
+            // synthesis.speak(speakText)
+        })
+        $.ajax({
+            url: 'http://localhost:3000/news/get',
+            type: 'GET',
+            headers: {
+                key: localStorage.getItem('keyword')
+            }
+        })
+            .done(function (news) {
+                $.each(news, function (index, value) {
+                    if (value.abstract) {
+                        let fixHeadline = value.headline.main.replace(/\'/g, ' ')
+                        let fixBody = value.abstract.replace(/\'/g, ' ')
+
+                        $('#listData').append(` <div class="card mt-3 bg-dark text-white">
+                        <h3 class="card-header" data-header="vietnam"> ${value.headline.main}</h3>
+                        <img style="height: 200px; width: 100%; display: block;" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22318%22%20height%3D%22180%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20318%20180%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_158bd1d28ef%20text%20%7B%20fill%3Argba(255%2C255%2C255%2C.75)%3Bfont-weight%3Anormal%3Bfont-family%3AHelvetica%2C%20monospace%3Bfont-size%3A16pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_158bd1d28ef%22%3E%3Crect%20width%3D%22318%22%20height%3D%22180%22%20fill%3D%22%23777%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%22129.359375%22%20y%3D%2297.35%22%3EImage%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E"
+                            alt="Card image">
+                        <div class="card-body">
+                            <p  class="card-text">${value.abstract}</p>
+                        </div>
+                        <div class="card-body">
+                            <button onclick="ShowDetail('${fixHeadline}','${fixBody}')">
+                                Detail
+                            </button>
+                        </div>
+                    </div>`)
+                    }
+                })
+            })
+            .fail(function (err) {
+                console.log(err)
+            })
+        function ShowDetail(header, body) {
+            $('#detail').show()
+            let inputBody = body
+            let inputHeader = header
+            $('#mainDetail').html(
+                `<h1 id="detailHeader" data-header="${inputHeader}">${inputHeader}</h1>
+                <p id="detailBody" data-body="${inputBody}">${inputBody}</p>`
+            )
+        }
+    </script>
+</body>
+
+</html>
