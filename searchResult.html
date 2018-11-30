@@ -174,45 +174,43 @@
 
         $("#submitSpeech").submit(function( event ) {
             event.preventDefault()
-            // let text = $("#input_text").val()
-            // let voice = voices[document.getElementById("voiceOptions").value].lang
 
-            let voice = voices[$('#voiceOptions').val()]
-            let words = $('#detailBody').data('body')
-            let select = $('#listLanguages').val()
-
-            console.log(`${select}-${select.toUpperCase()}`)
-            $.ajax({
-              type: "POST",
-              url: 'http://localhost:3000/speech',
-              data: {
-                  lang: voice,
-                  text: words
-              },
-              dataType: 'json'
-            })
-            .done(result => {
-                // console.log('resuuuult')
-                // console.log(result.body)
-                const audio = new Audio(result.body);
-                // console.log('audio')
-                // console.log(audio)
-                audio.play();
-            })
-            .fail(err => {
-                console.log(err.responseJSON)
-                alert(err.responseJSON.msg)
-            })
-            
-            // let text = $('#detailBody').data('body')
             // let voice = voices[$('#voiceOptions').val()]
-            // console.log(voice)
-            // speakText = new SpeechSynthesisUtterance(text)
-            // speakText.rate = 0.9
-            // speakText.voice = voice
-            // speakText.pitch = 1
+            // let words = $('#detailBody').data('body')
+            // let select = $('#listLanguages').val()
+
+            // console.log(`${select}-${select.toUpperCase()}`)
+            // $.ajax({
+            //   type: "POST",
+            //   url: 'http://localhost:3000/speech',
+            //   data: {
+            //       lang: voice,
+            //       text: words
+            //   },
+            //   dataType: 'json'
+            // })
+            // .done(result => {
+            //     // console.log('resuuuult')
+            //     // console.log(result.body)
+            //     const audio = new Audio(result.body);
+            //     // console.log('audio')
+            //     // console.log(audio)
+            //     audio.play();
+            // })
+            // .fail(err => {
+            //     console.log(err.responseJSON)
+            //     alert(err.responseJSON.msg)
+            // })
             
-            // synthesis.speak(speakText)
+            let text = $('#detailBody').data('body')
+            let voice = voices[$('#voiceOptions').val()]
+            console.log(voice)
+            speakText = new SpeechSynthesisUtterance(text)
+            speakText.rate = 0.9
+            speakText.voice = voice
+            speakText.pitch = 1
+            
+            synthesis.speak(speakText)
         })
 
     </script>
