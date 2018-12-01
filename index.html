@@ -14,7 +14,8 @@
         <script>
             window.fbAsyncInit = function () {
                 FB.init({
-                    appId: '577570032678120',
+                    // appId: '577570032678120',
+                    appId: '251374875555400',
                     cookie: true,
                     xfbml: true,
                     version: 'v3.2'
@@ -61,11 +62,11 @@
         crossorigin="anonymous "></script>
     <script>
 
-        if (localStorage.getItem('token')) {
-            $('#formLogin').hide()
-        } else {
-            $('#formLogin').show()
-        }
+        // if (localStorage.getItem('token')) {
+        //     $('#formLogin').hide()
+        // } else {
+        //     $('#formLogin').show()
+        // }
 
         FB.getLoginStatus(function (response) {
             statusChangeCallback(response);
@@ -88,7 +89,7 @@
             })
                 .done(function (user) {
                     localStorage.setItem('token', user)
-
+                    window.location.href= 'homepage.html'
                 })
                 .fail(function (err) {
                     console.log(err)
